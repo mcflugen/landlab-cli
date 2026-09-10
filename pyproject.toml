@@ -1,0 +1,104 @@
+[project]
+name = "landlab_cli"
+version = "0.1.0"
+requires-python = ">=3.12"
+description = "The Landlab command"
+license = "MIT"
+license-files = ["LICENSE.md"]
+keywords = [
+	"Landlab",
+]
+authors = [
+    { name = "Eric Hutton", email = "huttone@colorado.edu" },
+]
+maintainers = [
+    { name = "Eric Hutton", email = "huttone@colorado.edu" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Scientific/Engineering :: Hydrology",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+]
+dynamic = [
+    "readme",
+]
+
+[project.scripts]
+landlab = "landlab_cli._cli:main"
+
+[project.urls]
+documentation = "https://github.com/mcflugen/landlab-cli"
+homepage = "https://github.com/mcflugen/landlab-cli"
+repository = "https://github.com/mcflugen/landlab-cli"
+
+[build-system]
+requires = [
+    "setuptools >=61",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.optional-dependencies]
+dev = [
+    "nox",
+]
+testing = [
+    "pytest",
+]
+
+[tool.setuptools.packages.find]
+where = [
+    "src",
+]
+
+[tool.coverage.run]
+relative_files = true
+
+[tool.isort]
+known_first_party = "landlab_cli"
+profile = "black"
+force_single_line = true
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "src",
+    "tests",
+]
+norecursedirs = [
+    ".*",
+    "*.egg*",
+    "build",
+    "dist",
+]
+addopts = [
+    "--tb=native",
+    "--durations=16",
+    "--strict-markers",
+    "--doctest-modules",
+    "-vvv",
+]
+
+[tool.black]
+target-version = ["py312"]

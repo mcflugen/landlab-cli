@@ -1,0 +1,79 @@
+repos:
+- repo: https://github.com/psf/black
+  rev: 26.5.1
+  hooks:
+  - id: black
+    name: black
+    description: "Black: The uncompromising Python code formatter"
+    entry: black
+    language: python
+    language_version: python3
+    minimum_pre_commit_version: 2.9.2
+    require_serial: true
+    types_or: [python, pyi]
+
+- repo: https://github.com/keewis/blackdoc
+  rev: v0.4.6
+  hooks:
+  - id: blackdoc
+    description: "Black for doctests"
+    additional_dependencies: ["black==26.5.1"]
+  - id: blackdoc-autoupdate-black
+
+
+- repo: https://github.com/pycqa/flake8
+  rev: 7.3.0
+  hooks:
+  - id: flake8
+    additional_dependencies:
+    - flake8-bugbear!=24.4.21
+    - flake8-comprehensions
+    - flake8-simplify
+    - pep8-naming
+
+- repo: https://github.com/asottile/pyupgrade
+  rev: v3.21.2
+  hooks:
+  - id: pyupgrade
+    args: [--py312-plus]
+
+- repo: https://github.com/PyCQA/isort
+  rev: 9.0.1
+  hooks:
+  - id: isort
+    name: isort (python)
+    args: [--force-single-line-imports]
+    types: [python]
+
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+    - id: check-builtin-literals
+    - id: check-added-large-files
+    - id: check-case-conflict
+    - id: check-toml
+    - id: check-yaml
+    - id: debug-statements
+    - id: end-of-file-fixer
+    - id: forbid-new-submodules
+    - id: mixed-line-ending
+      args: [--fix=lf]
+      exclude: \.bat$
+    - id: mixed-line-ending
+      args: [--fix=crlf]
+      files: \.bat$
+    - id: trailing-whitespace
+    - id: file-contents-sorter
+      files: |
+        (?x)^(
+          .gitignore|
+          .*requirements(-\w+)?.(in|txt)
+        )
+
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v2.3.1
+  hooks:
+  - id: mypy
+    language_version: python3.12
+    types: [python]
+    files: "^src/landlab_cli/"
