@@ -4,10 +4,13 @@
 
 ### 🍰 Features
 
-* Add the initial `landlab` command with help and version output.
+* Add the initial `landlab-cli` command with help and version output.
   [#1](https://github.com/mcflugen/landlab-cli/issues/1)
-* Add the `landlab` console entry point.
+* Add the `landlab-cli` console entry point.
   [#1](https://github.com/mcflugen/landlab-cli/issues/1)
+* Add `info`, `components`, `fields`, `grids`, and `catalog` subcommands for
+  inspecting an installed Landlab package and generating metadata catalogs.
+  [#2](https://github.com/mcflugen/landlab-cli/issues/2)
 
 ### 🧪 Tests
 
