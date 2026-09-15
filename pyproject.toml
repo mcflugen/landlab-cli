@@ -28,13 +28,14 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Physics",
 ]
 dependencies = [
+    "tomli-w",
 ]
 dynamic = [
     "readme",
 ]
 
 [project.scripts]
-landlab = "landlab_cli._cli:main"
+landlab-cli = "landlab_cli._cli:main"
 
 [project.urls]
 documentation = "https://github.com/mcflugen/landlab-cli"
@@ -52,6 +53,9 @@ file = "README.md"
 content-type = "text/markdown"
 
 [project.optional-dependencies]
+landlab = [
+    "landlab",
+]
 dev = [
     "nox",
 ]
