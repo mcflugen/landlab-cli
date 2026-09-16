@@ -4,6 +4,8 @@
 
 ### 🍰 Features
 
+* Add `--format` to all subcommands to select TOML or JSON output, replacing
+  `info --json`. [#5](https://github.com/mcflugen/landlab-cli/pull/5)
 * Add the initial `landlab-cli` command with help and version output.
   [#1](https://github.com/mcflugen/landlab-cli/issues/1)
 * Add the `landlab-cli` console entry point.

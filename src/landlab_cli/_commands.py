@@ -31,7 +31,7 @@ def cmd_info(args: argparse.Namespace) -> int:
         },
     }
 
-    print_document(info, fmt="json" if args.json else "toml")
+    print_document(info, fmt=args.format)
 
     return 0
 
@@ -43,13 +43,13 @@ def cmd_components(args: argparse.Namespace) -> int:
         providing=args.providing,
     )
 
-    if not args.details:
+    if not args.details and args.format is None:
         print_lines(sorted(selected))
         return 0
 
-    details = catalog_components(selected)
+    catalog = catalog_components if args.details else sorted
 
-    print_document({"components": details}, fmt="toml")
+    print_document({"components": catalog(selected)}, fmt=args.format or "toml")
 
     return 0
 
@@ -74,24 +74,27 @@ def cmd_fields(args: argparse.Namespace) -> int:
         selected, used_by=args.used_by, provided_by=args.provided_by
     )
 
-    if not args.details:
+    if not args.details and args.format is None:
         print_lines(sorted(details))
         return 0
 
-    print_document({"fields": details})
+    output = details if args.details else sorted(details)
+
+    print_document({"fields": output}, fmt=args.format or "toml")
+
     return 0
 
 
 def cmd_grids(args: argparse.Namespace) -> int:
     grids = get_grids()
 
-    if not args.details:
+    if not args.details and args.format is None:
         print_lines(sorted(grids))
         return 0
 
-    index = catalog_grids(grids)
+    catalog = catalog_grids if args.details else sorted
 
-    print_document({"grids": index})
+    print_document({"grids": catalog(grids)}, fmt=args.format or "toml")
 
     return 0
 
@@ -106,6 +109,6 @@ def cmd_catalog(args: argparse.Namespace) -> int:
         "grids": catalog_grids(grids),
     }
 
-    print_document(doc, fmt="toml")
+    print_document(doc, fmt=args.format)
 
     return 0
