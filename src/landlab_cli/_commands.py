@@ -55,21 +55,23 @@ def cmd_components(args: argparse.Namespace) -> int:
 
 
 def cmd_fields(args: argparse.Namespace) -> int:
-    component_name = args.used_by if args.used_by is not None else args.provided_by
+    if args.used_by is None and args.provided_by is None:
+        component_names = None
+    else:
+        component_names = set()
+        if args.used_by:
+            component_names |= set(args.used_by)
+        if args.provided_by:
+            component_names |= set(args.provided_by)
 
     try:
-        selected = select_components_by_name(get_components(), names=component_name)
+        selected = select_components_by_name(get_components(), names=component_names)
     except KeyError as error:
         print_error(f"{error.args[0]}: unknown component")
         return 1
 
-    include_inputs = args.provided_by is None
-    include_outputs = args.used_by is None
-
     details = catalog_component_fields(
-        selected.values(),
-        include_inputs=include_inputs,
-        include_outputs=include_outputs,
+        selected, used_by=args.used_by, provided_by=args.provided_by
     )
 
     if not args.details:
@@ -100,7 +102,7 @@ def cmd_catalog(args: argparse.Namespace) -> int:
 
     doc = {
         "components": catalog_components(components),
-        "fields": catalog_component_fields(components.values()),
+        "fields": catalog_component_fields(components),
         "grids": catalog_grids(grids),
     }
 

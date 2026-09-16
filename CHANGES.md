@@ -11,6 +11,10 @@
 * Add `info`, `components`, `fields`, `grids`, and `catalog` subcommands for
   inspecting an installed Landlab package and generating metadata catalogs.
   [#2](https://github.com/mcflugen/landlab-cli/issues/2)
+* Allow `components --using` and `--providing`, and `fields --used-by` and
+  `--provided-by`, to be combined. Results must match both filters (AND).
+  Each option can be repeated to match any of its supplied values (OR).
+  [#4](https://github.com/mcflugen/landlab-cli/issues/4)
 
 ### 🧪 Tests
 

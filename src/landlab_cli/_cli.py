@@ -25,26 +25,32 @@ def build_parser() -> argparse.ArgumentParser:
     info_parser.set_defaults(func=cmd_info)
 
     components_parser = subparsers.add_parser("components")
-    filters = components_parser.add_mutually_exclusive_group()
-    filters.add_argument(
-        "--using", metavar="FIELD", help="select components that use FIELD"
+    components_parser.add_argument(
+        "--using",
+        metavar="FIELD",
+        action="append",
+        help="select components that use FIELD",
     )
-    filters.add_argument(
-        "--providing", metavar="FIELD", help="select components that provide FIELD"
+    components_parser.add_argument(
+        "--providing",
+        metavar="FIELD",
+        action="append",
+        help="select components that provide FIELD",
     )
     components_parser.add_argument("--details", action="store_true")
     components_parser.set_defaults(func=cmd_components)
 
     fields_parser = subparsers.add_parser("fields")
-    fields_filters = fields_parser.add_mutually_exclusive_group()
-    fields_filters.add_argument(
+    fields_parser.add_argument(
         "--used-by",
         metavar="COMPONENT",
+        action="append",
         help="select fields that are used by COMPONENT",
     )
-    fields_filters.add_argument(
+    fields_parser.add_argument(
         "--provided-by",
         metavar="COMPONENT",
+        action="append",
         help="select fields that are provided by COMPONENT",
     )
     fields_parser.add_argument("--details", action="store_true")

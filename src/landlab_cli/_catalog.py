@@ -4,7 +4,7 @@ import inspect
 import re
 from collections import defaultdict
 from collections.abc import Collection
-from collections.abc import Iterable
+from collections.abc import Mapping
 from typing import Any
 
 
@@ -21,29 +21,46 @@ def catalog_components(components: dict[str, Any]) -> dict[str, Any]:
 
 
 def catalog_component_fields(
-    components: Iterable[Any],
+    components: Mapping[str, Any],
     *,
-    include_inputs: bool = True,
-    include_outputs: bool = True,
+    used_by: str | Collection[str] | None = None,
+    provided_by: str | Collection[str] | None = None,
 ) -> dict[str, Any]:
+    if isinstance(used_by, str):
+        used_by = [used_by]
+    if isinstance(provided_by, str):
+        provided_by = [provided_by]
+
     details: dict[str, Any] = defaultdict(lambda: defaultdict(set))
-    for cls in components:
+    for name, cls in components.items():
         component_path = f"{cls.__module__}.{cls.__name__}"
+        if used_by is None and provided_by is None:
+            include_inputs = include_outputs = True
+        else:
+            include_inputs = used_by is not None and name in used_by
+            include_outputs = provided_by is not None and name in provided_by
 
         for field, desc in cls._info.items():
-            is_input = desc["intent"].startswith("in")
-            is_output = desc["intent"].endswith("out")
+            is_input = include_inputs and desc["intent"].startswith("in")
+            is_output = include_outputs and desc["intent"].endswith("out")
 
-            if not ((is_input and include_inputs) or (is_output and include_outputs)):
+            if not (is_input or is_output):
                 continue
 
             details[field]["desc"].add(desc["doc"])
-            if is_input and include_inputs:
+            if is_input:
                 details[field]["used_by"].add(component_path)
-            if is_output and include_outputs:
+            if is_output:
                 details[field]["provided_by"].add(component_path)
 
-    return normalize_fields(details)
+    return normalize_fields(
+        {
+            field: info
+            for field, info in details.items()
+            if (used_by is None or info["used_by"])
+            and (provided_by is None or info["provided_by"])
+        }
+    )
 
 
 def catalog_grids(grids: dict[str, Any]) -> dict[str, Any]:
@@ -65,21 +82,20 @@ def catalog_grids(grids: dict[str, Any]) -> dict[str, Any]:
 def select_components(
     components: dict[str, Any],
     *,
-    using: str | None = None,
-    providing: str | None = None,
+    using: Collection[str] | None = None,
+    providing: Collection[str] | None = None,
 ) -> dict[str, Any]:
     if using is None and providing is None:
         return components
 
-    if using is None:
-        return {
-            name: cls
-            for name, cls in components.items()
-            if providing in cls.output_var_names
-        }
+    using = set(using) if using is not None else None
+    providing = set(providing) if providing is not None else None
 
     return {
-        name: cls for name, cls in components.items() if using in cls.input_var_names
+        name: cls
+        for name, cls in components.items()
+        if (using is None or using & set(cls.input_var_names))
+        and (providing is None or providing & set(cls.output_var_names))
     }
 
 
