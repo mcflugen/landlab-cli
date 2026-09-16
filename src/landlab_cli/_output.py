@@ -4,6 +4,7 @@ import json
 import sys
 from collections.abc import Callable
 from collections.abc import Iterable
+from functools import partial
 from typing import Any
 
 import tomli_w
@@ -21,8 +22,8 @@ def print_lines(lines: Iterable[str]) -> None:
 
 def print_document(doc: dict[str, Any], *, fmt: str = "toml") -> None:
     writers: dict[str, Callable[[dict[str, Any]], str]] = {
-        "json": json.dumps,
-        "toml": tomli_w.dumps,
+        "json": partial(json.dumps, indent=2),
+        "toml": partial(tomli_w.dumps, indent=2),
     }
     if fmt not in writers:
         raise ValueError("fmt must be one of {', '.join(sorted(writers))}")

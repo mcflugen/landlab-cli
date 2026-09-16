@@ -21,7 +21,12 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command")
 
     info_parser = subparsers.add_parser("info")
-    info_parser.add_argument("--json", action="store_true")
+    info_parser.add_argument(
+        "--format",
+        choices=("toml", "json"),
+        default="toml",
+        help="output format",
+    )
     info_parser.set_defaults(func=cmd_info)
 
     components_parser = subparsers.add_parser("components")
@@ -37,7 +42,6 @@ def build_parser() -> argparse.ArgumentParser:
         action="append",
         help="select components that provide FIELD",
     )
-    components_parser.add_argument("--details", action="store_true")
     components_parser.set_defaults(func=cmd_components)
 
     fields_parser = subparsers.add_parser("fields")
@@ -53,14 +57,27 @@ def build_parser() -> argparse.ArgumentParser:
         action="append",
         help="select fields that are provided by COMPONENT",
     )
-    fields_parser.add_argument("--details", action="store_true")
     fields_parser.set_defaults(func=cmd_fields)
 
     grids_parser = subparsers.add_parser("grids")
-    grids_parser.add_argument("--details", action="store_true")
     grids_parser.set_defaults(func=cmd_grids)
 
+    for _parser in (components_parser, fields_parser, grids_parser):
+        _parser.add_argument("--details", action="store_true")
+        _parser.add_argument(
+            "--format",
+            choices=("toml", "json"),
+            default=None,
+            help="output format",
+        )
+
     catalog_parser = subparsers.add_parser("catalog")
+    catalog_parser.add_argument(
+        "--format",
+        choices=("toml", "json"),
+        default="toml",
+        help="output format",
+    )
     catalog_parser.set_defaults(func=cmd_catalog)
 
     return parser
