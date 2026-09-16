@@ -7,6 +7,7 @@ from landlab_cli._commands import cmd_components
 from landlab_cli._commands import cmd_fields
 from landlab_cli._commands import cmd_grids
 from landlab_cli._commands import cmd_info
+from landlab_cli._commands import cmd_lint
 from landlab_cli._landlab import LandlabNotFoundError
 from landlab_cli._output import print_error
 from landlab_cli._version import __version__
@@ -79,6 +80,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="output format",
     )
     catalog_parser.set_defaults(func=cmd_catalog)
+
+    lint_parser = subparsers.add_parser("lint")
+    lint_parser.add_argument("--exclude", action="append", help="issues to ignore")
+    lint_parser.add_argument(
+        "--format",
+        choices=("text", "json", "toml"),
+        default="text",
+        help="output format",
+    )
+    lint_parser.set_defaults(func=cmd_lint)
 
     return parser
 

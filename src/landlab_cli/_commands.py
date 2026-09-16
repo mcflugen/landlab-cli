@@ -10,6 +10,9 @@ from landlab_cli._catalog import select_components_by_name
 from landlab_cli._landlab import get_components
 from landlab_cli._landlab import get_grids
 from landlab_cli._landlab import get_landlab_info
+from landlab_cli._lint import lint_components
+from landlab_cli._lint import lint_grids
+from landlab_cli._lint import select_issues
 from landlab_cli._output import print_document
 from landlab_cli._output import print_error
 from landlab_cli._output import print_lines
@@ -112,3 +115,21 @@ def cmd_catalog(args: argparse.Namespace) -> int:
     print_document(doc, fmt=args.format)
 
     return 0
+
+
+def cmd_lint(args: argparse.Namespace) -> int:
+    components = get_components()
+    grids = get_grids()
+
+    issues = select_issues(
+        lint_components(components) + lint_grids(grids), exclude=args.exclude
+    )
+
+    if args.format == "text":
+        print_lines(str(issue) for issue in issues)
+    else:
+        print_document(
+            {"issues": [issue.as_dict() for issue in issues]}, fmt=args.format
+        )
+
+    return 1 if issues else 0
