@@ -5,9 +5,10 @@ from dataclasses import dataclass
 from types import ModuleType
 from typing import Any
 
+from packaging.version import Version
 
-class LandlabNotFoundError(ModuleNotFoundError):
-    pass
+from landlab_cli._errors import LandlabNotFoundError
+from landlab_cli._errors import LandlabVersionError
 
 
 @dataclass(frozen=True)
@@ -16,7 +17,16 @@ class LandlabInfo:
     location: str
 
 
-def load_landlab(name: str) -> ModuleType:
+def load_landlab(name: str, *, min_version: str | None = None) -> ModuleType:
+    if min_version is not None:
+        version = Version(_load_landlab("landlab._version").__version__)
+        if version < Version(min_version):
+            raise LandlabVersionError(f"landlab version must be >= {min_version}")
+
+    return _load_landlab(name)
+
+
+def _load_landlab(name: str) -> ModuleType:
     try:
         module = importlib.import_module(name)
     except ModuleNotFoundError as err:

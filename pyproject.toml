@@ -28,6 +28,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Physics",
 ]
 dependencies = [
+    "packaging",
     "tomli-w",
 ]
 dynamic = [

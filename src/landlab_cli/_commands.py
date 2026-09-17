@@ -7,6 +7,7 @@ from landlab_cli._catalog import catalog_components
 from landlab_cli._catalog import catalog_grids
 from landlab_cli._catalog import select_components
 from landlab_cli._catalog import select_components_by_name
+from landlab_cli._errors import ModelConfigurationError
 from landlab_cli._landlab import get_components
 from landlab_cli._landlab import get_grids
 from landlab_cli._landlab import get_landlab_info
@@ -16,6 +17,8 @@ from landlab_cli._lint import select_issues
 from landlab_cli._output import print_document
 from landlab_cli._output import print_error
 from landlab_cli._output import print_lines
+from landlab_cli._run import load_model
+from landlab_cli._run import load_model_config
 from landlab_cli._version import __version__
 
 
@@ -133,3 +136,20 @@ def cmd_lint(args: argparse.Namespace) -> int:
         )
 
     return 1 if issues else 0
+
+
+def cmd_run(args: argparse.Namespace) -> int:
+    model_cls = load_model(args.module, name=args.model)
+
+    if args.config:
+        try:
+            params = load_model_config(args.config)
+        except OSError as error:
+            raise ModelConfigurationError(str(error)) from error
+    else:
+        params = {}
+
+    model = model_cls.from_params(params)
+    model.run()
+
+    return 0

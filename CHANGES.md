@@ -17,6 +17,8 @@
   `--provided-by`, to be combined. Results must match both filters (AND).
   Each option can be repeated to match any of its supplied values (OR).
   [#4](https://github.com/mcflugen/landlab-cli/issues/4)
+* Add `run` subcommand for running a Landlab model.
+  [#6](https://github.com/mcflugen/landlab-cli/issues/6)
 
 ### 🧪 Tests
 
