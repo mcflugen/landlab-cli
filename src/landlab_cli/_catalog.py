@@ -181,14 +181,20 @@ ALL_TAGS = {
 
 
 def categorize_class(cls: type) -> dict[str, set[str]]:
-    funcs: dict[str, set[str]] = {tag: set() for tag in ALL_TAGS}
+    funcs: dict[str, set[str]] = defaultdict(set)
+    for tag in ALL_TAGS:
+        _ = funcs[tag]
 
-    for name, func in inspect.getmembers(cls):
+    for name, func in inspect.getmembers(cls, supports_categorization):
         if not name.startswith("_"):
             full_name = ".".join([cls.__module__, cls.__name__, name])
             for cat in landlab_metadata(inspect.getdoc(func)):
                 funcs[cat].add(full_name)
     return funcs
+
+
+def supports_categorization(member: object) -> bool:
+    return inspect.isroutine(member) or isinstance(member, property)
 
 
 _LANDLAB_METADATA = re.compile(r"^:meta\s+landlab:\s*(.*)$")
