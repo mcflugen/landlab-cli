@@ -8,7 +8,8 @@ from landlab_cli._commands import cmd_fields
 from landlab_cli._commands import cmd_grids
 from landlab_cli._commands import cmd_info
 from landlab_cli._commands import cmd_lint
-from landlab_cli._landlab import LandlabNotFoundError
+from landlab_cli._commands import cmd_run
+from landlab_cli._errors import LandlabCLIError
 from landlab_cli._output import print_error
 from landlab_cli._version import __version__
 
@@ -91,6 +92,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     lint_parser.set_defaults(func=cmd_lint)
 
+    run_parser = subparsers.add_parser("run")
+    run_parser.add_argument("module")
+    run_parser.add_argument("--config", metavar="PATH", default=None)
+    run_parser.add_argument("--model", metavar="NAME", default=None)
+    run_parser.set_defaults(func=cmd_run)
+
     return parser
 
 
@@ -100,7 +107,7 @@ def main(argv: list[str] | None = None) -> int:
     if hasattr(args, "func"):
         try:
             return args.func(args)
-        except LandlabNotFoundError as error:
+        except LandlabCLIError as error:
             print_error(f"{parser.prog}: {error}")
             return 1
     else:
